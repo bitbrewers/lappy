@@ -1,0 +1,25 @@
+language: go
+
+env:
+  - DEP_VERSION="0.5.0"
+
+go:
+  - "1.10.x"
+
+# Build branches only when merging to master
+branches:
+  only:
+    - master
+
+before_install:
+  - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
+  - chmod +x $GOPATH/bin/dep
+
+install:
+  - dep ensure
+
+script:
+  - go test -v -coverprofile=coverage.txt -covermode=atomic -race ./...
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
