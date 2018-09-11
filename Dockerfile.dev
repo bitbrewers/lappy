@@ -1,0 +1,12 @@
+FROM golang:1.10
+
+RUN apt-get update && apt-get install -y socat
+RUN go get github.com/golang/dep/cmd/dep github.com/pilu/fresh github.com/bitbrewers/tranx2/cmd/tranx2sim
+
+WORKDIR /go/src/github.com/bitbrewers/lappy
+
+ADD Gopkg.toml Gopkg.lock ./
+RUN dep ensure --vendor-only
+COPY . .
+
+CMD [ "bash", "-c", "(socat PTY,raw,link=ttyS10,echo=0 PTY,raw,link=ttyS11,echo=0 & sleep 2) && (tranx2sim -i 10000 -t 5 > ./ttyS10 &) && fresh -c .freshconf" ]
