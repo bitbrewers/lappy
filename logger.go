@@ -18,6 +18,6 @@ func (FatalLogger) Debugf(_ string, _ ...interface{}) {}
 func (FatalLogger) Infof(_ string, _ ...interface{})  {}
 func (FatalLogger) Errorf(_ string, _ ...interface{}) {}
 func (FatalLogger) Fatalf(tmpl string, args ...interface{}) {
-	fmt.Printf(tmpl, args)
+	fmt.Printf(tmpl, args...)
 	os.Exit(1)
 }

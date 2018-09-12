@@ -31,18 +31,37 @@ Required environment variables:
 - `SERIAL_PORT` : path to serial device eg. `/dev/usbTTY11`
 
 
-## Running with docker
+## Running with docker using local serial device
+
+Create tunnel with socat
+
+```bash
+socat -d -d PTY,raw,echo=0 PTY,raw,echo=0
+2018/09/12 13:33:11 socat[31301] N PTY is /dev/pts/4
+2018/09/12 13:33:11 socat[31301] N PTY is /dev/pts/5
+2018/09/12 13:33:11 socat[31301] N starting data transfer loop with FDs [5,5] and [7,7]
+```
+
+Start container and mount /dev/pts to access just created `/dev/pts/4`
 
 ```bash
 docker run --rm -it \
-    --device=/dev/ttyUSB0 \
+    -v /dev/pts:/dev/pts \
     -p 8000:8000 \
     -e LOG_LEVEL='debug' \
     -e DSN='file:test.db' \
     -e LISTEN_ADDR=':8000' \
-    -e SERIAL_PORT='/dev/ttyUSB0' \
+    -e SERIAL_PORT='/dev/pts/4' \
     bitbrewers/lappy:latest
 ```
+
+Install simulator and start it to create trafic
+
+```bash
+go get github.com/bitbrewers/tranx2/cmd/tranx2sim
+tranx2sim -i 10000 -t 5 -j 2000 > /dev/pts/5
+```
+
 ## Running locally with simulator
 
 Instructions for basic linux setup
@@ -63,4 +82,5 @@ Instructions for basic linux setup
 
 ## Development
 
-Clone repo and run `make dev` for more check the Makefile.
+Clone repo and run `make dev`.
+For more check the Makefile.
