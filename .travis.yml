@@ -6,6 +6,9 @@ env:
 go:
   - "1.10.x"
 
+services:
+  - docker
+
 # Build branches only when merging to master
 branches:
   only:
@@ -20,6 +23,10 @@ install:
 
 script:
   - go test -v -coverprofile=coverage.txt -covermode=atomic -race ./...
+  - make image
+  - make dev-image
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - make publish-images

@@ -8,7 +8,6 @@ RUN dep ensure --vendor-only
 
 COPY cmd cmd
 COPY Makefile *.go ./
-RUN ls -la
 RUN make build
 
 FROM gcr.io/distroless/base

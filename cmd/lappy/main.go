@@ -50,13 +50,15 @@ func main() {
 	})
 
 	http.HandleFunc("/api/start", func(w http.ResponseWriter, r *http.Request) {
+		log.Info("start race")
 		if _, err := s.StartRace(time.Now()); err != nil {
 			log.Errorf("could not start race: %s", err)
 		}
 	})
-	http.HandleFunc("/api/end", func(w http.ResponseWriter, r *http.Request) {
-		if err := s.EndRace(time.Now()); err != nil {
-			log.Errorf("could not end race: %s", err)
+	http.HandleFunc("/api/stop", func(w http.ResponseWriter, r *http.Request) {
+		log.Info("stop race")
+		if err := s.StopRace(time.Now()); err != nil {
+			log.Errorf("could not stop race: %s", err)
 		}
 	})
 

@@ -93,7 +93,7 @@ func (s *SqliteStorage) StartRace(started time.Time) (race Race, err error) {
 	return
 }
 
-func (s *SqliteStorage) EndRace(ended time.Time) (err error) {
+func (s *SqliteStorage) StopRace(ended time.Time) (err error) {
 	tx, err := s.dbMap.Begin()
 	if err != nil {
 		return

@@ -15,9 +15,15 @@ test:
 image:
 	docker build --rm -t bitbrewers/lappy .
 
-dev:
+run:
+	docker run --rm -it bitbrewers/lappy
+
+dev-image:
 	docker build -f dev/Dockerfile --rm -t bitbrewers/lappy:dev .
+
+run-dev:
 	docker run \
+		-p 8000:8000 \
 		-e LOG_LEVEL='debug' \
 		-e DSN='file:/tmp/test.db' \
 		-e LISTEN_ADDR=':8000' \
@@ -25,7 +31,8 @@ dev:
 		-v $(shell pwd):/go/src/github.com/bitbrewers/lappy \
 		--rm -it bitbrewers/lappy-dev:latest \
 
-run:
-	docker run --rm -it bitbrewers/lappy
+publish-images:
+	docker push bitbrewers/lappy:latest
+	docker push bitbrewers/lappy:dev
 
-.PHONY: install test dev run
+.PHONY: install test run run-dev
