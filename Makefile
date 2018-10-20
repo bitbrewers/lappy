@@ -1,10 +1,12 @@
+.PHONY: install test run run-dev
+
 all: install
 
 install:
 	go install -v ./...
 
 build:
-	env GOOS=linux CGO_ENABLED=1 go build -o builds/lappy cmd/lappy/main.go
+	env CGO_ENABLED=1 go build -o builds/lappy cmd/lappy/main.go
 
 test:
 	go test -race -cover ./...
@@ -27,5 +29,3 @@ run-dev: dev-image
 publish-images:
 	docker push bitbrewers/lappy:latest
 	docker push bitbrewers/lappy:dev
-
-.PHONY: install test run run-dev

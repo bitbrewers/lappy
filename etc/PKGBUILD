@@ -1,0 +1,21 @@
+# Maintainer: Henri Koski <henri.t.koski@gmail.com>
+pkgname=lappy
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Lappy timing system"
+arch=('i686' 'x86_64')
+license=('MIT')
+makedepends=('go' 'git' 'make')
+source=("https://github.com/bitbrewers/$pkgname/archive/v$pkgver.tar.gz")
+md5sums=('SKIP')
+
+build() {
+	cd $pkgname-$pkgver
+	make build
+}
+
+package() {
+	cd $pkgname-$pkgver
+	install -Dm755 "builds/$pkgname" "$pkgdir/usr/bin/$pkgname"
+	#install -DT -m0755 "etc/lappy.service" "$pkgdir/usr/lib/systemd/system/lappy.service"
+}
