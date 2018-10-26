@@ -1,0 +1,9 @@
+[Unit]
+Description=Lappy timing system
+
+[Service]
+ExecStart=/usr/bin/lappy
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
