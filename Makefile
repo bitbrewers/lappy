@@ -1,22 +1,36 @@
-.PHONY: install test run run-dev
+.DEFAULT_GOAL			:= help
+APP_NAME 				= lappy
+CONTAINER_NAME 			= bitbrewers/${APP_NAME}
 
-all: install
+export GOFLAGS = -mod=vendor
+export GO111MODULE = on
 
-install:
+help:  ## Show help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+
+all: test install ## Test and install lappy
+
+.PHONY: install
+install: ## Install lappy
 	go install -v ./...
 
-build:
+.PHONY: build
+build: ## Build binary files
 	env CGO_ENABLED=1 go build -o builds/lappy cmd/lappy/main.go
 
-test:
+.PHONY: test
+test: ## Run all tests including integration tests
 	go test -race -cover ./...
 
-image:
-	docker build --rm -t bitbrewers/lappy .
+.PHONY: lint
+lint: ## Run static analyzer for whole code base. https://staticcheck.io
+	staticcheck ./...
 
-dev-image:
+.PHONY: dev-image
+dev-image: ## Build dev image
 	docker build -f etc/Dockerfile --rm -t bitbrewers/lappy:dev .
 
+.PHONY: run-image
 run-dev: dev-image
 	docker run \
 		-p 8000:8000 \
@@ -26,6 +40,6 @@ run-dev: dev-image
 		-v $(shell pwd):/lappy \
 		--rm -it bitbrewers/lappy:dev \
 
-publish-images:
-	docker push bitbrewers/lappy:latest
-	docker push bitbrewers/lappy:dev
+.PHONY: vendor
+vendor: ## Update vendor folder to match dependecies
+	go mod vendor
